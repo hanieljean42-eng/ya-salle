@@ -75,6 +75,14 @@ function roomsFor(site, reports) {
   }).sort((a, b) => (a.status === b.status ? a.label.localeCompare(b.label, 'fr', { numeric: true }) : a.status === 'libre' ? -1 : 1));
 }
 
+function authorsText(room) {
+  const names = [...new Set(room.votes.filter(v => v.status === room.status && v.by).map(v => v.by))];
+  if (!names.length) return '';
+  const shown = names.slice(0, 2).join(', ');
+  const rest = names.length - 2;
+  return `par ${shown}${rest > 0 ? ` et ${rest} autre${rest > 1 ? 's' : ''}` : ''} · `;
+}
+
 function ago(t) {
   const m = Math.floor((Date.now() - t) / 60000);
   return m < 1 ? "à l'instant" : `il y a ${m} min`;
@@ -122,7 +130,7 @@ function renderRooms(reports) {
         <span class="room-name">${esc(r.label)}</span>
         <span class="badge ${r.status}">${STATUS[r.status]}</span>
       </div>
-      <p class="room-meta">${until}${plural(r.votes.length, 'signalement')} · ${ago(r.lastAt)}</p>
+      <p class="room-meta">${until}${authorsText(r)}${plural(r.votes.length, 'signalement')} · ${ago(r.lastAt)}</p>
       <div class="room-actions">
         ${Object.entries(STATUS).map(([value, label]) => `<button type="button" class="vote" data-room="${esc(r.label)}" data-status="${value}" aria-pressed="${mine === value}">${label}</button>`).join('')}
       </div>
@@ -243,7 +251,7 @@ function submitReport(e) {
   const me = pseudoKey(user.pseudo);
   const reports = getReports().filter(r => !(r.site === site && r.room === room && r.user === me));
   const name = reports.find(r => r.site === site && r.room === room)?.label ?? label;
-  reports.push({ site, room, label: name, user: me, status, until, at: Date.now() });
+  reports.push({ site, room, label: name, user: me, by: user.pseudo, status, until, at: Date.now() });
   save(KEYS.reports, reports);
 
   $('#reportDialog').close();
@@ -288,7 +296,7 @@ document.querySelectorAll('dialog').forEach(dialog => {
   dialog.addEventListener('click', e => { if (e.target === dialog || e.target.closest('[data-close]')) dialog.close(); });
 });
 
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.0.1';
 async function checkUpdate() {
   if (!APP_VERSION || APP_VERSION.startsWith('__')) return;
   try {
