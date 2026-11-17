@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Y'a Salle — Trouver une salle libre à l'IUA</title>
+  <meta name="description" content="Trouvez une salle libre sur les sites de l'Institut Universitaire d'Abidjan.">
+  <meta name="theme-color" content="#0b3a82">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-top">
+      <a class="brand" href="./" aria-label="Y'a Salle, accueil">
+        <span class="brand-logo" data-logo></span>
+        <span class="brand-name">Y'a Salle<small>IUA</small></span>
+      </a>
+      <div class="account" id="account"></div>
+    </div>
+    <p class="hero-title">Trouve une salle libre sur ton site.</p>
+    <nav class="sites" id="sites" aria-label="Choisir le site"></nav>
+  </header>
+
+  <main class="sheet">
+    <div class="sheet-head">
+      <p class="summary" id="summary" aria-live="polite"></p>
+      <div class="filter" role="group" aria-label="Filtrer les salles">
+        <button type="button" data-filter="all" aria-pressed="true">Toutes</button>
+        <button type="button" data-filter="libre" aria-pressed="false">Libres</button>
+      </div>
+    </div>
+    <ul class="rooms" id="rooms"></ul>
+    <p class="empty" id="empty" hidden></p>
+    <p class="footnote">Un signalement disparaît après 1 h sans mise à jour.</p>
+  </main>
+
+  <div class="action-bar">
+    <button class="btn primary block" type="button" id="reportBtn">Signaler une salle</button>
+  </div>
+
+  <dialog class="modal" id="authDialog" aria-labelledby="authTitle">
+    <div class="modal-body">
+      <div class="modal-head">
+        <h2 id="authTitle">Mon compte</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Fermer">&times;</button>
+      </div>
+      <p class="modal-note" id="authNote" hidden></p>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="login" aria-selected="true">Connexion</button>
+        <button type="button" role="tab" data-tab="signup" aria-selected="false">Inscription</button>
+      </div>
+      <form class="form" id="authForm" novalidate>
+        <label class="field">
+          <span>Pseudo</span>
+          <input name="pseudo" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="3 à 20 caractères" required>
+        </label>
+        <label class="field">
+          <span>Code PIN (4 chiffres)</span>
+          <input name="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" placeholder="••••" required>
+        </label>
+        <label class="field" id="siteField" hidden>
+          <span>Ton site</span>
+          <select name="site"></select>
+        </label>
+        <p class="error" id="authError" role="alert"></p>
+        <button class="btn primary block" type="submit" id="authSubmit">Se connecter</button>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="reportDialog" aria-labelledby="reportTitle">
+    <div class="modal-body">
+      <div class="modal-head">
+        <h2 id="reportTitle">Signaler une salle</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Fermer">&times;</button>
+      </div>
+      <form class="form" id="reportForm" novalidate>
+        <label class="field">
+          <span>Site</span>
+          <select name="site"></select>
+        </label>
+        <label class="field">
+          <span>Salle (nom ou numéro)</span>
+          <input name="room" list="roomSuggestions" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Ex. A12, Amphi 2" required>
+          <small class="hint" id="roomPreview"></small>
+        </label>
+        <datalist id="roomSuggestions"></datalist>
+        <fieldset class="field">
+          <legend>Statut</legend>
+          <div class="segmented">
+            <label class="seg-libre"><input type="radio" name="status" value="libre" checked><span>Libre</span></label>
+            <label class="seg-occupee"><input type="radio" name="status" value="occupee"><span>Occupée</span></label>
+          </div>
+        </fieldset>
+        <label class="field">
+          <span>Jusqu'à quelle heure ? <em>(facultatif)</em></span>
+          <input name="until" type="time">
+        </label>
+        <p class="error" id="reportError" role="alert"></p>
+        <button class="btn primary block" type="submit">Envoyer</button>
+      </form>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
