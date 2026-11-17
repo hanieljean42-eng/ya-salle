@@ -22,12 +22,17 @@ const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const plural = (n, word) => `${n} ${word}${n > 1 ? 's' : ''}`;
 const pseudoKey = p => p.trim().toLowerCase();
-const normalizeRoom = raw => raw
+const formatRoom = raw => raw
+  .toLocaleUpperCase('fr')
+  .replace(/[^\p{L}\p{N} '.\-]/gu, '')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 30);
+const roomKey = label => label
   .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .toUpperCase()
-  .replace(/^\s*SALLE\b/, '')
-  .replace(/[^A-Z0-9-]/g, '')
-  .slice(0, 12);
+  .replace(/^SALLE\b/, '')
+  .replace(/[^A-Z0-9]/g, '');
 
 async function hashPin(key, pin) {
   const text = `iua-salle:${key}:${pin}`;
@@ -66,8 +71,8 @@ function roomsFor(site, reports) {
     const latest = votes.reduce((a, b) => (a.at > b.at ? a : b));
     const status = free > busy ? 'libre' : busy > free ? 'occupee' : latest.status;
     const until = votes.filter(v => v.status === status && v.until).sort((a, b) => b.at - a.at)[0]?.until ?? null;
-    return { room, votes, status, until, lastAt: latest.at };
-  }).sort((a, b) => (a.status === b.status ? a.room.localeCompare(b.room, 'fr', { numeric: true }) : a.status === 'libre' ? -1 : 1));
+    return { room, label: latest.label ?? room, votes, status, until, lastAt: latest.at };
+  }).sort((a, b) => (a.status === b.status ? a.label.localeCompare(b.label, 'fr', { numeric: true }) : a.status === 'libre' ? -1 : 1));
 }
 
 function ago(t) {
@@ -108,18 +113,18 @@ function renderRooms(reports) {
   const list = state.filter === 'libre' ? all.filter(r => r.status === 'libre') : all;
   const free = all.filter(r => r.status === 'libre').length;
 
-  $('#summary').textContent = all.length ? `${state.site} : ${free} libre${free > 1 ? 's' : ''} sur ${plural(all.length, 'salle signalée')}` : '';
+  $('#summary').textContent = all.length ? `Campus ${state.site} : ${free} libre${free > 1 ? 's' : ''} sur ${plural(all.length, 'salle signalée')}` : '';
   $('#rooms').innerHTML = list.map(r => {
     const mine = me ? r.votes.find(v => v.user === me)?.status : null;
     const until = r.until ? `<span class="room-until">jusqu'à ${esc(r.until)}</span> · ` : '';
     return `<li class="room is-${r.status}">
       <div class="room-head">
-        <span class="room-name">${esc(r.room)}</span>
+        <span class="room-name">${esc(r.label)}</span>
         <span class="badge ${r.status}">${STATUS[r.status]}</span>
       </div>
       <p class="room-meta">${until}${plural(r.votes.length, 'signalement')} · ${ago(r.lastAt)}</p>
       <div class="room-actions">
-        ${Object.entries(STATUS).map(([value, label]) => `<button type="button" class="vote" data-room="${esc(r.room)}" data-status="${value}" aria-pressed="${mine === value}">${label}</button>`).join('')}
+        ${Object.entries(STATUS).map(([value, label]) => `<button type="button" class="vote" data-room="${esc(r.label)}" data-status="${value}" aria-pressed="${mine === value}">${label}</button>`).join('')}
       </div>
     </li>`;
   }).join('');
@@ -127,8 +132,8 @@ function renderRooms(reports) {
   const empty = $('#empty');
   empty.hidden = list.length > 0;
   empty.textContent = all.length
-    ? 'Aucune salle libre signalée pour le moment sur ce site.'
-    : `Aucune salle signalée à ${state.site} dans la dernière heure. Sois le premier à en signaler une.`;
+    ? `Campus ${state.site} : aucune salle libre pour le moment.`
+    : `Campus ${state.site} : aucune salle signalée pour le moment. Sois le premier à en signaler une.`;
 }
 
 function render() {
@@ -216,9 +221,11 @@ function openReport(prefill = {}) {
 
 function updateRoomHelpers() {
   const form = $('#reportForm');
-  const room = normalizeRoom(form.room.value);
-  $('#roomPreview').textContent = room && room !== form.room.value.trim() ? `Enregistrée comme : ${room}` : '';
-  $('#roomSuggestions').innerHTML = roomsFor(form.site.value, getReports()).map(r => `<option value="${esc(r.room)}">`).join('');
+  const rooms = roomsFor(form.site.value, getReports());
+  const label = formatRoom(form.room.value);
+  const existing = label && rooms.find(r => r.room === roomKey(label));
+  $('#roomPreview').textContent = existing && existing.label !== label ? `Déjà signalée sous le nom : ${existing.label}` : '';
+  $('#roomSuggestions').innerHTML = rooms.map(r => `<option value="${esc(r.label)}">`).join('');
 }
 
 function submitReport(e) {
@@ -227,18 +234,20 @@ function submitReport(e) {
   if (!user) return $('#reportDialog').close(), openAuth('Connecte-toi pour signaler une salle.');
   const form = e.target;
   const site = SITES.includes(form.site.value) ? form.site.value : state.site;
-  const room = normalizeRoom(form.room.value);
+  const label = formatRoom(form.room.value);
+  const room = roomKey(label);
   const status = form.status.value in STATUS ? form.status.value : 'libre';
   const until = /^\d{2}:\d{2}$/.test(form.until.value) ? form.until.value : null;
   if (!room) return ($('#reportError').textContent = 'Indiquez le nom ou le numéro de la salle.');
 
   const me = pseudoKey(user.pseudo);
   const reports = getReports().filter(r => !(r.site === site && r.room === room && r.user === me));
-  reports.push({ site, room, user: me, status, until, at: Date.now() });
+  const name = reports.find(r => r.site === site && r.room === room)?.label ?? label;
+  reports.push({ site, room, label: name, user: me, status, until, at: Date.now() });
   save(KEYS.reports, reports);
 
   $('#reportDialog').close();
-  toast(`Salle ${room} signalée ${STATUS[status].toLowerCase()}`);
+  toast(`${name} : ${STATUS[status].toLowerCase()}`);
   setSite(site);
 }
 

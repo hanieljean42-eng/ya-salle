@@ -137,7 +137,7 @@ button { cursor: pointer; touch-action: manipulation; }
 .room.is-libre::before { background: var(--free); }
 .room.is-occupee::before { background: var(--busy); }
 .room-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.room-name { font-size: 1.35rem; font-weight: 800; letter-spacing: .01em; overflow-wrap: anywhere; }
+.room-name { font-size: 1.45rem; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; overflow-wrap: anywhere; line-height: 1.2; }
 .room-meta { margin: 0; color: var(--muted); font-size: .88rem; }
 .room-until { color: var(--text); font-weight: 700; }
 
@@ -212,6 +212,7 @@ button { cursor: pointer; touch-action: manipulation; }
   background: #fff;
   font-size: 16px;
 }
+#reportForm input[name="room"] { text-transform: uppercase; font-weight: 700; letter-spacing: .02em; }
 .field input:focus, .field select:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(11, 58, 130, .15); }
 .hint { color: var(--muted); font-size: .82rem; }
 .hint:empty { display: none; }

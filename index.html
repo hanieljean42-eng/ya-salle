@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Y'a Salle — Trouver une salle libre à l'IUA</title>
-  <meta name="description" content="Trouvez une salle libre sur les sites de l'Institut Universitaire d'Abidjan.">
+  <meta name="description" content="Trouvez une salle libre sur les campus de l'Institut Universitaire d'Abidjan.">
   <meta name="theme-color" content="#0b3a82">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,8 +17,8 @@
       </a>
       <div class="account" id="account"></div>
     </div>
-    <p class="hero-title">Trouve une salle libre sur ton site IUA.</p>
-    <nav class="sites" id="sites" aria-label="Choisir le site"></nav>
+    <p class="hero-title">Trouve une salle libre sur ton campus.</p>
+    <nav class="sites" id="sites" aria-label="Choisir le campus"></nav>
   </header>
 
   <main class="sheet">
@@ -59,7 +59,7 @@
           <input name="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" placeholder="••••" required>
         </label>
         <label class="field" id="siteField" hidden>
-          <span>Ton site</span>
+          <span>Ton campus</span>
           <select name="site"></select>
         </label>
         <p class="error" id="authError" role="alert"></p>
@@ -76,12 +76,12 @@
       </div>
       <form class="form" id="reportForm" novalidate>
         <label class="field">
-          <span>Site</span>
+          <span>Campus</span>
           <select name="site"></select>
         </label>
         <label class="field">
           <span>Salle (nom ou numéro)</span>
-          <input name="room" list="roomSuggestions" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Ex. A12, Amphi 2" required>
+          <input name="room" list="roomSuggestions" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Ex. A12, AMPHI 2, SALLE INFO" required>
           <small class="hint" id="roomPreview"></small>
         </label>
         <datalist id="roomSuggestions"></datalist>
