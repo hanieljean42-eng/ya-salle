@@ -6,8 +6,6 @@
   <title>Y'a Salle — Trouver une salle libre à l'IUA</title>
   <meta name="description" content="Trouvez une salle libre sur les campus de l'Institut Universitaire d'Abidjan.">
   <meta name="theme-color" content="#0b3a82">
-  <meta name="app-version" content="__VERSION__">
-  <link rel="stylesheet" href="style.css?v=__VERSION__">
 </head>
 <body>
   <header class="hero">
@@ -105,6 +103,26 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="app.js?v=__VERSION__"></script>
+<script>
+(function () {
+  function load(v) {
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'style.css?v=' + v;
+    document.head.appendChild(l);
+    var s = document.createElement('script');
+    s.src = 'app.js?v=' + v;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { document.body.appendChild(s); });
+    } else {
+      document.body.appendChild(s);
+    }
+  }
+  fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { load(d.version || ''); })
+    .catch(function () { load(''); });
+})();
+</script>
 </body>
 </html>

@@ -288,7 +288,7 @@ document.querySelectorAll('dialog').forEach(dialog => {
   dialog.addEventListener('click', e => { if (e.target === dialog || e.target.closest('[data-close]')) dialog.close(); });
 });
 
-const APP_VERSION = document.querySelector('meta[name="app-version"]')?.content ?? '';
+const APP_VERSION = '1.0.0';
 async function checkUpdate() {
   if (!APP_VERSION || APP_VERSION.startsWith('__')) return;
   try {
