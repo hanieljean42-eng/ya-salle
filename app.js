@@ -288,6 +288,20 @@ document.querySelectorAll('dialog').forEach(dialog => {
   dialog.addEventListener('click', e => { if (e.target === dialog || e.target.closest('[data-close]')) dialog.close(); });
 });
 
+const APP_VERSION = document.querySelector('meta[name="app-version"]')?.content ?? '';
+async function checkUpdate() {
+  if (!APP_VERSION || APP_VERSION.startsWith('__')) return;
+  try {
+    const { version } = await (await fetch(`version.json?t=${Date.now()}`, { cache: 'no-store' })).json();
+    if (version && version !== APP_VERSION && new URLSearchParams(location.search).get('v') !== version) {
+      location.replace(`${location.pathname}?v=${version}`);
+    }
+  } catch {}
+}
+checkUpdate();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
+window.addEventListener('pageshow', e => { if (e.persisted) checkUpdate(); });
+
 window.addEventListener('storage', render);
 setInterval(render, 30000);
 render();

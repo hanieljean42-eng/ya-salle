@@ -1,0 +1,37 @@
+name: Déploiement
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Numéro de version des fichiers
+        run: |
+          V="${GITHUB_SHA::8}"
+          mkdir dist
+          cp index.html style.css app.js dist/
+          sed -i "s/__VERSION__/$V/g" dist/index.html
+          printf '{"version":"%s"}\n' "$V" > dist/version.json
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4
