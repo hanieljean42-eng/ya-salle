@@ -78,6 +78,12 @@ button { cursor: pointer; touch-action: manipulation; }
 .account { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .user { display: flex; align-items: center; gap: 8px; min-width: 0; font-weight: 600; }
 .user-name { max-width: 30vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.streak {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: .85rem; font-weight: 800; color: #d96c2c;
+  white-space: nowrap;
+}
+.streak svg { width: 15px; height: 15px; fill: #d96c2c; }
 .avatar {
   width: 34px; height: 34px; border-radius: 50%; flex: none;
   display: grid; place-items: center;
