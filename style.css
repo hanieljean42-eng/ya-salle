@@ -1,8 +1,8 @@
 :root {
-  --blue: #0b3a82;
-  --blue-dark: #082b61;
-  --blue-mid: #3d6cc0;
-  --blue-soft: #eef3fb;
+  --blue: #467ff7;
+  --blue-dark: #2f63e0;
+  --blue-mid: #7fa3fa;
+  --blue-soft: #eaf0fe;
   --free: #1f9d55;
   --free-soft: #e8f6ee;
   --busy: #d64545;
@@ -29,7 +29,7 @@ body {
 
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; touch-action: manipulation; }
-:focus-visible { outline: 3px solid rgba(61, 108, 192, .5); outline-offset: 2px; }
+:focus-visible { outline: 3px solid rgba(70, 127, 247, .5); outline-offset: 2px; }
 
 /* En-tête bleu */
 .hero {
@@ -181,7 +181,7 @@ button { cursor: pointer; touch-action: manipulation; }
   padding: 12px 16px calc(12px + var(--safe-bottom));
   background: linear-gradient(to top, #f6f8fc 70%, rgba(246, 248, 252, 0));
 }
-.action-bar .btn { max-width: 480px; margin: 0 auto; display: block; box-shadow: 0 8px 24px rgba(11, 58, 130, .28); }
+.action-bar .btn { max-width: 480px; margin: 0 auto; display: block; box-shadow: 0 8px 24px rgba(70, 127, 247, .28); }
 
 /* Fenêtres : feuille du bas sur mobile */
 .modal {
@@ -194,7 +194,7 @@ button { cursor: pointer; touch-action: manipulation; }
   overflow-y: auto;
 }
 .modal[open] { animation: sheet-up .22s ease-out; }
-.modal::backdrop { background: rgba(8, 43, 97, .5); }
+.modal::backdrop { background: rgba(20, 46, 105, .5); }
 .modal-body { padding: 20px 18px calc(20px + var(--safe-bottom)); }
 .modal-body::before { content: ""; display: block; width: 40px; height: 4px; border-radius: 4px; background: var(--border); margin: -8px auto 14px; }
 .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -203,7 +203,7 @@ button { cursor: pointer; touch-action: manipulation; }
 
 .tabs { display: flex; background: var(--blue-soft); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
 .tabs button { flex: 1; min-height: 40px; border: 0; background: none; border-radius: 9px; font-weight: 700; color: var(--muted); }
-.tabs button[aria-selected="true"] { background: #fff; color: var(--blue); box-shadow: 0 1px 3px rgba(11, 58, 130, .12); }
+.tabs button[aria-selected="true"] { background: #fff; color: var(--blue); box-shadow: 0 1px 3px rgba(70, 127, 247, .12); }
 
 .form { display: flex; flex-direction: column; gap: 14px; }
 .field { display: flex; flex-direction: column; gap: 6px; border: 0; padding: 0; margin: 0; min-width: 0; }
@@ -219,7 +219,7 @@ button { cursor: pointer; touch-action: manipulation; }
   font-size: 16px;
 }
 #reportForm input[name="room"] { text-transform: uppercase; font-weight: 700; letter-spacing: .02em; }
-.field input:focus, .field select:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(11, 58, 130, .15); }
+.field input:focus, .field select:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(70, 127, 247, .15); }
 .hint { color: var(--muted); font-size: .82rem; }
 .hint:empty { display: none; }
 .error { color: var(--busy); font-size: .88rem; margin: 0; }
@@ -234,7 +234,7 @@ button { cursor: pointer; touch-action: manipulation; }
 }
 .seg-libre input:checked + span { border-color: var(--free); background: var(--free-soft); color: var(--free); }
 .seg-occupee input:checked + span { border-color: var(--busy); background: var(--busy-soft); color: var(--busy); }
-.segmented input:focus-visible + span { outline: 3px solid rgba(61, 108, 192, .5); outline-offset: 2px; }
+.segmented input:focus-visible + span { outline: 3px solid rgba(70, 127, 247, .5); outline-offset: 2px; }
 
 /* Message bref */
 .toast {

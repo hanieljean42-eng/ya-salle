@@ -310,7 +310,7 @@ document.querySelectorAll('dialog').forEach(dialog => {
   dialog.addEventListener('click', e => { if (e.target === dialog || e.target.closest('[data-close]')) dialog.close(); });
 });
 
-const APP_VERSION = '1.0.2';
+const APP_VERSION = '1.0.3';
 async function checkUpdate() {
   if (!APP_VERSION || APP_VERSION.startsWith('__')) return;
   try {
