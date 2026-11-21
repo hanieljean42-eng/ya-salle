@@ -29,7 +29,11 @@ body {
 
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; touch-action: manipulation; }
-:focus-visible { outline: 3px solid rgba(70, 127, 247, .5); outline-offset: 2px; }
+:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, .85);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(70, 127, 247, .45);
+}
 
 /* En-tête bleu */
 .hero {
@@ -234,7 +238,11 @@ button { cursor: pointer; touch-action: manipulation; }
 }
 .seg-libre input:checked + span { border-color: var(--free); background: var(--free-soft); color: var(--free); }
 .seg-occupee input:checked + span { border-color: var(--busy); background: var(--busy-soft); color: var(--busy); }
-.segmented input:focus-visible + span { outline: 3px solid rgba(70, 127, 247, .5); outline-offset: 2px; }
+.segmented input:focus-visible + span {
+  outline: 3px solid rgba(255, 255, 255, .85);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(70, 127, 247, .45);
+}
 
 /* Message bref */
 .toast {
